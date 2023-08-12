@@ -1,1 +1,102 @@
+from sklearn.datasets import fetch_openml
 
+mnist = fetch_openml('mnist_784')
+
+mnist
+
+x,y = mnist['data'],mnist['target']
+
+
+x.shape
+
+y.shape
+
+x
+
+y
+
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+
+import matplotlib
+
+some_digit = x.to_numpy()[3600]
+
+some_digit_image = some_digit.reshape(28,28) 
+
+plt.imshow(some_digit_image,cmap=matplotlib.cm.binary,interpolation='nearest')
+plt.axis('off')
+
+y[3606]
+
+# Shuffling the training dataset to train maximum digits in training dataset
+
+import numpy as np
+shuffleIndex = np.random.permutation(6000)
+
+x_train,x_test = x[:6000],x[6000:7000]
+y_train,y_test = y[:6000],y[6000:7000]
+
+x_train,y_train = x_train.to_numpy()[shuffleIndex],y_train.to_numpy()[shuffleIndex]
+x_train = x_train.astype(np.int8)
+y_train = y_train.astype(np.int8)
+
+## creating a 9 detector
+
+y_train = y_train.astype(np.int8)
+y_test = y_train.astype(np.int8)
+y_train2 = (y_train==9)
+y_test2 = (y_test==9)
+
+y_train2
+
+from sklearn.linear_model import LogisticRegression  
+
+clf = LogisticRegression(tol=0.1)
+
+
+clf.fit(x_train,y_test2)
+
+clf.predict([some_digit])
+
+## cross validation 
+
+from sklearn.model_selection import cross_val_score
+a = cross_val_score(clf,x_train,y_test2,cv=3,scoring="accuracy")
+
+print("Efficiancy of the model:",a.mean()*100,"%")
+
+## creating a not 2 detector
+
+
+y_train = y_train.astype(np.int8)
+y_test = y_test.astype(np.int8)
+y_train3 = (y_train!=2)
+
+
+y_train3
+
+y_train
+
+from sklearn.linear_model import LogisticRegression
+
+clf = LogisticRegression(tol=0.1)
+
+clf.fit(x_train,y_train3)
+
+clf.predict([some_digit])
+
+## cross validation
+
+from sklearn.model_selection import cross_val_score
+a = cross_val_score(clf,x_train,y_train3,cv=3,scoring="accuracy")
+
+a
+
+clf.predict([some_digit])
+
+# efficiancy of the model not 2 detector
+a.mean()
+
+print("Efficiancy of the model is:",a.mean()*100,"%")
